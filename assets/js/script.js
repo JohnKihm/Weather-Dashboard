@@ -1,7 +1,7 @@
 const APIKey = '2e9e578d780591495092dea32c4a362d';
 const inputFormEl = $('#form');
 const recentSearchesContainer = $('recent-searches');
-const currentConditionsContainer = $('#current-conditions');
+const currentWeatherContainer = $('#current-weather');
 const forecastContainer = $('#five-day-forecast');
 
 function handleFormSubmit(event) {
@@ -20,21 +20,15 @@ function handleFormSubmit(event) {
             return response.json();
         })
         .then(function (searchResult) {
-            console.log(searchResult);
-            console.log(searchResult[0].lat);
-            console.log(searchResult[0].lon);
-
             const newCity = searchResult[0];
-            console.log(newCity);
-            console.log(newCity.lat);
-            console.log(newCity.lon);
             //const cities = loadRecentSearches();
             //cities.push(newCity);
             //saveRecentSearches(cities);
             displayCurrentWeather(newCity);
-            displayForecast(newCity);
+            //displayForecast(newCity);
             //displayRecentSearches();
         })
+    $('#city').val('');
 }
 
 function displayCurrentWeather(city) {
@@ -49,7 +43,24 @@ function displayCurrentWeather(city) {
             return response.json();
         })
         .then(function (searchResult) {
-            console.log(searchResult);
+            currentWeatherContainer.empty();
+
+            const iconURL = `https://openweathermap.org/img/wn/${searchResult.weather[0].icon}@2x.png`;
+            const date = dayjs.unix(searchResult.dt).format('M/D/YYYY');
+
+            const weatherDisplay = $('<div>');
+            const displayHeader = $('<div>');
+            const headerText = $('<h2>').text(`${searchResult.name} (${date})`);
+            const weatherIcon = $('<img>').attr('src', iconURL);
+            const displayBody = $('<ul>');
+            const displayTemp = $('<li>').text(`Temp: ${searchResult.main.temp}°F`);
+            const displayWind = $('<li>').text(`Wind: ${searchResult.wind.speed} MPH`);
+            const displayHumidity = $('<li>').text(`Humidity: ${searchResult.main.humidity}%`);
+
+            displayHeader.append(headerText, weatherIcon);
+            displayBody.append(displayTemp, displayWind, displayHumidity);
+            weatherDisplay.append(displayHeader, displayBody);
+            currentWeatherContainer.append(weatherDisplay);
         })
 }
 
