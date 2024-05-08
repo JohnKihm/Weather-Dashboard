@@ -9,7 +9,7 @@ function handleFormSubmit(event) {
 
     const cityInput = $('#city').val().trim();
     console.log(cityInput);
-    const searchQuery = `http://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${APIKey}`;
+    const searchQuery = `https://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${APIKey}`;
 
     fetch(searchQuery)
         .then(function (response) {
@@ -24,12 +24,48 @@ function handleFormSubmit(event) {
             console.log(searchResult[0].lat);
             console.log(searchResult[0].lon);
 
-            //const newCity = searchResult[0];
+            const newCity = searchResult[0];
+            console.log(newCity);
+            console.log(newCity.lat);
+            console.log(newCity.lon);
             //const cities = loadRecentSearches();
             //cities.push(newCity);
             //saveRecentSearches(cities);
-            //displaySearchResults(newCity);
+            displayCurrentWeather(newCity);
+            displayForecast(newCity);
             //displayRecentSearches();
+        })
+}
+
+function displayCurrentWeather(city) {
+    const searchQuery = `https://api.openweathermap.org/data/2.5/weather?lat=${city.lat}&lon=${city.lon}&appid=${APIKey}&units=imperial`;
+
+    fetch(searchQuery)
+        .then(function (response) {
+            if (!response.ok) {
+                alert(response.status + ' ' + response.statusText);
+                return;
+            }
+            return response.json();
+        })
+        .then(function (searchResult) {
+            console.log(searchResult);
+        })
+}
+
+function displayForecast(city) {
+    const searchQuery = `https://api.openweathermap.org/data/2.5/forecast?lat=${city.lat}&lon=${city.lon}&appid=${APIKey}&units=imperial`;
+
+    fetch(searchQuery)
+        .then(function (response) {
+            if (!response.ok) {
+                alert(response.status + ' ' + response.statusText);
+                return;
+            }
+            return response.json();
+        })
+        .then(function (searchResult) {
+            console.log(searchResult);
         })
 }
 
