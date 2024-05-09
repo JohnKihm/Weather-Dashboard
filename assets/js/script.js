@@ -5,15 +5,15 @@ const currentWeatherContainer = $('#current-weather');
 const forecastContainer = $('#forecast');
 
 function loadRecentSearches() {
-    let cities = JSON.parse(localStorage.getItem('cities'));
-    if (!cities) {
-        cities = [];
+    let recentSearches = JSON.parse(localStorage.getItem('recentSearches'));
+    if (!recentSearches) {
+        recentSearches = [];
     }
-    return cities;
+    return recentSearches;
 }
 
-function saveRecentSearches(cities) {
-    localStorage.setItem('cities', JSON.stringify(cities));
+function saveRecentSearches(recentSearches) {
+    localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
 }
 
 function handleFormSubmit(event) {
@@ -34,15 +34,6 @@ function handleFormSubmit(event) {
             const newCity = searchResult[0];
             displayCurrentWeather(newCity);
             displayForecast(newCity);
-            const cities = loadRecentSearches();
-            for (city of cities) {
-                if (city.name === newCity.name) {
-                    return;
-                }
-            }
-            cities.push(newCity);
-            saveRecentSearches(cities);
-            displayRecentSearches();
         })
     $('#city').val('');
 }
@@ -64,7 +55,7 @@ function displayCurrentWeather(city) {
             const iconURL = `https://openweathermap.org/img/wn/${searchResult.weather[0].icon}@2x.png`;
             const date = dayjs.unix(searchResult.dt).format('M/D/YYYY');
 
-            const weatherDisplay = $('<div>').addClass('border p-2');
+            const weatherDisplay = $('<div>').addClass('border border-3 p-2');
             const displayHeader = $('<ul>').addClass('list-inline weather-header');
             const displayCity = $('<li>').addClass('list-inline-item').text(searchResult.name);
             const displayDate = $('<li>').addClass('list-inline-item').text(`(${date})`);
@@ -78,6 +69,17 @@ function displayCurrentWeather(city) {
             displayBody.append(displayTemp, displayWind, displayHumidity);
             weatherDisplay.append(displayHeader, displayBody);
             currentWeatherContainer.append(weatherDisplay);
+
+            city.name = searchResult.name;
+            const recentSearches = loadRecentSearches();
+            for (search of recentSearches) {
+                if (city.name === search.name) {
+                    return;
+                }
+            }
+            recentSearches.push(city);
+            saveRecentSearches(recentSearches);
+            displayRecentSearches();
         })
 }
 
