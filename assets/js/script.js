@@ -2,7 +2,7 @@ const APIKey = '2e9e578d780591495092dea32c4a362d';
 const inputFormEl = $('#form');
 const recentSearchesContainer = $('recent-searches');
 const currentWeatherContainer = $('#current-weather');
-const forecastContainer = $('#five-day-forecast');
+const forecastContainer = $('#forecast');
 
 function handleFormSubmit(event) {
     event.preventDefault();
@@ -25,7 +25,7 @@ function handleFormSubmit(event) {
             //cities.push(newCity);
             //saveRecentSearches(cities);
             displayCurrentWeather(newCity);
-            //displayForecast(newCity);
+            displayForecast(newCity);
             //displayRecentSearches();
         })
     $('#city').val('');
@@ -76,7 +76,35 @@ function displayForecast(city) {
             return response.json();
         })
         .then(function (searchResult) {
+            forecastContainer.empty();
             console.log(searchResult);
+            console.log(searchResult.list[0].dt_txt.split(' ')[1]);
+            const days = [];
+
+            for (item of searchResult.list) {
+                if (item.dt_txt.split(' ')[1] === '15:00:00') {
+                    days.push(item);
+                }
+            }
+            console.log(days);
+
+            for (day of days) {
+                const iconURL = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`;
+                const date = dayjs.unix(day.dt).format('M/D/YYYY');
+                const forecastCard = $('<div>');
+                const cardHeader = $('<div>');
+                const cardDate = $('<h4>').text(date);
+                const weatherIcon = $('<img>').attr('src', iconURL);
+                const cardBody = $('<ul>');
+                const cardTemp = $('<li>').text(`Temp: ${day.main.temp}°F`);
+                const cardWind = $('<li>').text(`Wind: ${day.wind.speed} MPH`);
+                const cardHumidity = $('<li>').text(`Humidity: ${day.main.humidity}%`);
+
+                cardHeader.append(cardDate, weatherIcon);
+                cardBody.append(cardTemp, cardWind, cardHumidity);
+                forecastCard.append(cardHeader, cardBody);
+                forecastContainer.append(forecastCard);
+            }
         })
 }
 
