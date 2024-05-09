@@ -129,8 +129,21 @@ function displayRecentSearches() {
     const cities = loadRecentSearches();
 
     for (city of cities) {
-        const recentSearchButton = $('<btn>').addClass('btn custom-btn form-control my-1').text(city.name);
+        const recentSearchButton = $('<btn>').addClass('btn custom-btn form-control my-1').text(city.name).attr('data-city-name', city.name);
+        recentSearchButton.on('click', resubmitRecentSearch);
         recentSearchesContainer.append(recentSearchButton);
+    }
+}
+
+function resubmitRecentSearch() {
+    const cityName = $(this).attr('data-city-name');
+    const cities = loadRecentSearches();
+    
+    for (city of cities) {
+        if (cityName === city.name) {
+            displayCurrentWeather(city);
+            displayForecast(city);
+        }
     }
 }
 
