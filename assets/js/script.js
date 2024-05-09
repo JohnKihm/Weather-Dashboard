@@ -4,6 +4,18 @@ const recentSearchesContainer = $('recent-searches');
 const currentWeatherContainer = $('#current-weather');
 const forecastContainer = $('#forecast');
 
+function loadRecentSearches() {
+    let cities = JSON.parse(localStorage.getItem('cities'));
+    if (!cities) {
+        cities = [];
+    }
+    return cities;
+}
+
+function saveRecentSearches(cities) {
+    localStorage.setItem('cities', JSON.stringify(cities));
+}
+
 function handleFormSubmit(event) {
     event.preventDefault();
 
