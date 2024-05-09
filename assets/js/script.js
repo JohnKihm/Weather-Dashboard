@@ -95,11 +95,12 @@ function displayForecast(city) {
             return response.json();
         })
         .then(function (searchResult) {
+            const timeOfDay = searchResult.list[39].dt_txt.split(' ')[1];
             forecastContainer.empty();
             const days = [];
 
             for (item of searchResult.list) {
-                if (item.dt_txt.split(' ')[1] === '15:00:00') {
+                if (item.dt_txt.split(' ')[1] === timeOfDay) {
                     days.push(item);
                 }
             }
