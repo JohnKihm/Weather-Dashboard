@@ -48,16 +48,17 @@ function displayCurrentWeather(city) {
             const iconURL = `https://openweathermap.org/img/wn/${searchResult.weather[0].icon}@2x.png`;
             const date = dayjs.unix(searchResult.dt).format('M/D/YYYY');
 
-            const weatherDisplay = $('<div>');
-            const displayHeader = $('<div>');
-            const headerText = $('<h2>').text(`${searchResult.name} (${date})`);
-            const weatherIcon = $('<img>').attr('src', iconURL);
-            const displayBody = $('<ul>');
-            const displayTemp = $('<li>').text(`Temp: ${searchResult.main.temp}°F`);
-            const displayWind = $('<li>').text(`Wind: ${searchResult.wind.speed} MPH`);
+            const weatherDisplay = $('<div>').addClass('border p-2');
+            const displayHeader = $('<ul>').addClass('list-inline weather-header');
+            const displayCity = $('<li>').addClass('list-inline-item').text(searchResult.name);
+            const displayDate = $('<li>').addClass('list-inline-item').text(`(${date})`);
+            const weatherIcon = $('<img>').addClass('list-inline-item').attr('src', iconURL);
+            const displayBody = $('<ul>').addClass('list-unstyled h4');
+            const displayTemp = $('<li>').addClass('mb-3').text(`Temp: ${searchResult.main.temp}°F`);
+            const displayWind = $('<li>').addClass('mb-3').text(`Wind: ${searchResult.wind.speed} MPH`);
             const displayHumidity = $('<li>').text(`Humidity: ${searchResult.main.humidity}%`);
 
-            displayHeader.append(headerText, weatherIcon);
+            displayHeader.append(displayCity, displayDate, weatherIcon);
             displayBody.append(displayTemp, displayWind, displayHumidity);
             weatherDisplay.append(displayHeader, displayBody);
             currentWeatherContainer.append(weatherDisplay);
@@ -87,15 +88,16 @@ function displayForecast(city) {
                 }
             }
             console.log(days);
+            $('#forecast-header').text('5-Day Forecast:');
 
             for (day of days) {
                 const iconURL = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`;
                 const date = dayjs.unix(day.dt).format('M/D/YYYY');
-                const forecastCard = $('<div>');
+                const forecastCard = $('<div>').addClass('card custom-card px-5 py-3 text-center');
                 const cardHeader = $('<div>');
                 const cardDate = $('<h4>').text(date);
                 const weatherIcon = $('<img>').attr('src', iconURL);
-                const cardBody = $('<ul>');
+                const cardBody = $('<ul>').addClass('list-unstyled');
                 const cardTemp = $('<li>').text(`Temp: ${day.main.temp}°F`);
                 const cardWind = $('<li>').text(`Wind: ${day.wind.speed} MPH`);
                 const cardHumidity = $('<li>').text(`Humidity: ${day.main.humidity}%`);
