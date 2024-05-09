@@ -1,6 +1,6 @@
 const APIKey = '2e9e578d780591495092dea32c4a362d';
 const inputFormEl = $('#form');
-const recentSearchesContainer = $('recent-searches');
+const recentSearchesContainer = $('#recent-searches');
 const currentWeatherContainer = $('#current-weather');
 const forecastContainer = $('#forecast');
 
@@ -20,7 +20,6 @@ function handleFormSubmit(event) {
     event.preventDefault();
 
     const cityInput = $('#city').val().trim();
-    console.log(cityInput);
     const searchQuery = `https://api.openweathermap.org/geo/1.0/direct?q=${cityInput}&limit=1&appid=${APIKey}`;
 
     fetch(searchQuery)
@@ -33,12 +32,17 @@ function handleFormSubmit(event) {
         })
         .then(function (searchResult) {
             const newCity = searchResult[0];
-            //const cities = loadRecentSearches();
-            //cities.push(newCity);
-            //saveRecentSearches(cities);
             displayCurrentWeather(newCity);
             displayForecast(newCity);
-            //displayRecentSearches();
+            const cities = loadRecentSearches();
+            for (city of cities) {
+                if (city.name === newCity.name) {
+                    return;
+                }
+            }
+            cities.push(newCity);
+            saveRecentSearches(cities);
+            displayRecentSearches();
         })
     $('#city').val('');
 }
@@ -90,8 +94,6 @@ function displayForecast(city) {
         })
         .then(function (searchResult) {
             forecastContainer.empty();
-            console.log(searchResult);
-            console.log(searchResult.list[0].dt_txt.split(' ')[1]);
             const days = [];
 
             for (item of searchResult.list) {
@@ -99,7 +101,7 @@ function displayForecast(city) {
                     days.push(item);
                 }
             }
-            console.log(days);
+
             $('#forecast-header').text('5-Day Forecast:');
 
             for (day of days) {
@@ -121,5 +123,17 @@ function displayForecast(city) {
             }
         })
 }
+
+function displayRecentSearches() {
+    recentSearchesContainer.empty();
+    const cities = loadRecentSearches();
+
+    for (city of cities) {
+        const recentSearchButton = $('<btn>').addClass('btn custom-btn form-control my-1').text(city.name);
+        recentSearchesContainer.append(recentSearchButton);
+    }
+}
+
+displayRecentSearches();
 
 inputFormEl.on('submit', handleFormSubmit);
