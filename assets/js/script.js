@@ -111,7 +111,7 @@ function displayForecast(city) {
                 const iconURL = `https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`;
                 const date = dayjs.unix(day.dt).format('M/D/YYYY');
                 const time = dayjs.unix(day.dt).format('h:mm a');
-                const forecastCard = $('<div>').addClass('card custom-card px-5 py-3 text-center');
+                const forecastCard = $('<div>').addClass('card custom-card px-5 py-2 text-center');
                 const cardHeader = $('<div>');
                 const cardDate = $('<h4>').text(date);
                 const cardTime = $('<h4>').text(time);

@@ -1,5 +1,10 @@
-.custom-card, .custom-btn {
-    color: white;
+.custom-card {
+    color: aliceblue;
+    background-color: #00aa71;
+}
+
+.custom-btn {
+    color: #E3DAC9;
     background-color: #6f42c1;
 }
 
